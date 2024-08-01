@@ -54,7 +54,7 @@ contract YieldTracking {
         } else if (middlemen[_from].yield >= _yield) {
             // checker=middlemen[_from].yield ;
             middlemen[_from].yield -= _yield;
-            if (_yield < ((middlemen[_from].yield ) * 2 / 10)) { // Checking if remaining yield is below 20% of transferred yield
+            if (_yield < ((middlemen[_from].yield ) * 2 / 10)) { 
                 belowThreshold = true;
             }
             if (bytes(retailers[_to].name).length != 0) {

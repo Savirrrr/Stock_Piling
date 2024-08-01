@@ -5,17 +5,15 @@ const { ethers } = require('ethers');
 const app = express();
 const port = 3000;
 
-// Load the ABI from the JSON file
 const contractABI = require('./build/contracts/YieldTracking.json').abi;
 
-// Initialize Ethereum provider and wallet
+
 const provider = new ethers.providers.JsonRpcProvider(process.env.INFURA_URL);
 const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 const contract = new ethers.Contract(process.env.CONTRACT_ADDRESS, contractABI, wallet);
 
 app.use(express.json());
 
-// Function to add a farmer and return the count of farmers
 app.post('/add-farmer', async (req, res) => {
     const { address, name, yieldAmount } = req.body;
     try {
@@ -33,7 +31,6 @@ app.post('/add-farmer', async (req, res) => {
     }
 });
 
-// Function to add a middleman and return the count of middlemen
 app.post('/add-middleman', async (req, res) => {
     const { address, name, yieldAmount } = req.body;
     try {
@@ -51,7 +48,7 @@ app.post('/add-middleman', async (req, res) => {
     }
 });
 
-// Function to add a retailer and return the count of retailers
+
 app.post('/add-retailer', async (req, res) => {
     const { address, name } = req.body;
     try {
@@ -69,18 +66,18 @@ app.post('/add-retailer', async (req, res) => {
     }
 });
 
-// Function to transfer yield
+
 app.post('/transfer-yield', async (req, res) => {
     const { from, to, yieldAmount } = req.body;
     try {
         const tx = await contract.transferYield(from, to, yieldAmount);
         const receipt = await tx.wait();
 
-        // Logging receipt and receipt.logs
+
         console.log("Receipt: ", receipt);
         console.log("Receipt Logs: ", receipt.logs);
 
-        // Manually decode logs
+
         const eventSignature = ethers.utils.id("YieldTransferred(address,address,uint256,bool)");
         const abiCoder = new ethers.utils.Interface([
             "event YieldTransferred(address indexed from, address indexed to, uint256 yield, bool belowThreshold)"
@@ -117,7 +114,6 @@ app.post('/transfer-yield', async (req, res) => {
     }
 });
 
-// Endpoint to get a middleman's yield
 app.get('/middleman-yield/:address', async (req, res) => {
     const address = req.params.address;
     try {
@@ -151,7 +147,6 @@ app.get('/farmer-yield/:address', async (req, res) => {
     }
 });
 
-// Start the server
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
